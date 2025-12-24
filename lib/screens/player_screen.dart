@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
-import 'package:iptv_app/model/channel.dart';
 import 'package:video_player/video_player.dart';
+import 'package:iptv_app/model/channel.dart';
 
 class PlayerScreen extends StatefulWidget {
   final Channel channel;
@@ -22,14 +22,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
     _initializePlayer();
   }
 
-  Future<void> _initializePlayer() async {
+  void _initializePlayer() async {
     if (widget.channel.streamUrl.isEmpty) {
       setState(() => _error = true);
       return;
     }
 
-    _videoController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.channel.streamUrl),
+    _videoController = VideoPlayerController.network(
+      widget.channel.streamUrl,
+      formatHint: VideoFormat.hls, // force HLS
     );
 
     try {
@@ -38,6 +39,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
         videoPlayerController: _videoController!,
         autoPlay: true,
         allowFullScreen: true,
+        allowedScreenSleep: false,
+        showControls: true,
       );
       setState(() {});
     } catch (e) {
@@ -48,8 +51,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   void dispose() {
-    _videoController?.dispose();
     _chewieController?.dispose();
+    _videoController?.dispose();
     super.dispose();
   }
 

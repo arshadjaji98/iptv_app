@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iptv_app/model/channel.dart';
 import 'package:iptv_app/services/iptv_services.dart';
@@ -32,22 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void search(String query) {
-    final q = query.toLowerCase().trim(); // trim whitespace
     setState(() {
-      if (q.isEmpty) {
-        filteredChannels = allChannels;
-      } else {
-        filteredChannels = allChannels.where((c) {
-          final name = c.name.toLowerCase().trim();
-          return name.contains(q);
-        }).toList();
-      }
+      filteredChannels = allChannels
+          .where((c) => c.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     });
-
-    if (kDebugMode) {
-      print('Query: "$query"');
-    }
-    print('Filtered count: ${filteredChannels.length}');
   }
 
   @override
